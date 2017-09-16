@@ -105,23 +105,49 @@ function saveBackgroundColor(url, color) {
 // user devices.
 document.addEventListener('DOMContentLoaded', () => {
   // TODO(ydich): Set var: wallet to database query.
-  var wallet = 2
-  document.getElementById("wallet").innerHTML = "$" + wallet;
-  if (wallet < 5) {
-    var remainder = 5 - wallet;
-    document.getElementById("remainder").innerHTML = "<b>$" + remainder + "</b> until $5.";
-    document.getElementById("donateButton").innerHTML = "Round up to $5 and donate now!"
-  } else {
-    document.getElementById("remainder").innerHTML = "";
-    document.getElementById("donateButton").innerHTML = "Donate now!";
+  var wallet = 20 // testing purposes here only
+  var payment;
+  update();
+  function update() {
+    // wallet = ?
+    document.getElementById("wallet").innerHTML = "$" + wallet;
+    if (wallet < 5) {
+      var remainder = 5 - wallet;
+      document.getElementById("remainder").innerHTML = "<b>$" + remainder + "</b> until $5.";
+      document.getElementById("donateButton").innerHTML = "Round up to $5 and donate now!"
+      payment = 5
+    } else {
+      document.getElementById("remainder").innerHTML = "";
+      document.getElementById("donateButton").innerHTML = "Donate now!";
+      payment = wallet
+    }
+    document.getElementById("donateButton").addEventListener("click", pay);
   }
-  document.getElementById("donateButton").addEventListener("click", myFunction);
-  // TODO: Call payment API.
-  // var xhr = new XMLHttpRequest();
-  // xhr.open("POST", "https://api.sandbox.paypal.com/v1/payments/payment", true);
-  function myFunction() {
-    document.getElementById("donateButton").innerHTML = "YOU CLICKED ME";
+
+  function pay() {
+    // TODO: Call payment API.
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "https://api.sandbox.paypal.com/v1/payments/payment", true);
+
+    // Reset all. TODO: Reset value in database too.
+    wallet = 0
+    update();
   }
+
+  // var wallet = 20
+  // document.getElementById("wallet").innerHTML = "$" + wallet;
+  // if (wallet < 5) {
+  //   var remainder = 5 - wallet;
+  //   document.getElementById("remainder").innerHTML = "<b>$" + remainder + "</b> until $5.";
+  //   document.getElementById("donateButton").innerHTML = "Round up to $5 and donate now!"
+  //   var payment = 5
+  // } else {
+  //   document.getElementById("remainder").innerHTML = "";
+  //   document.getElementById("donateButton").innerHTML = "Donate now!";
+  //   var payment = wallet
+  // }
+  // document.getElementById("donateButton").addEventListener("click", pay);
+
   // getCurrentTabUrl((url) => {
   //   var dropdown = document.getElementById('dropdown');
   //
