@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
 
-  "name": "Getting started example",
-  "description": "This extension allows the user to change the background color of the current page.",
+  "name": "Heart of Gold",
+  "description": "This extension allows the user to round up their transactions for charity.",
   "version": "1.0",
 
   "browser_action": {

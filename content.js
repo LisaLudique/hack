@@ -18,9 +18,6 @@ if (price > 0) {
   var roundUp = getRoundUp(price);
   if (confirm("You can round up and donate " + roundUp.toString() + ". Press OK to add to your donation wallet, or cancel to exit.")) {
     // User pressed "OK" and decided to pay.
-    // TODO: Call payment API.
-    // var xhr = new XMLHttpRequest();
-    // xhr.open("POST", "https://api.sandbox.paypal.com/v1/payments/payment", true);
     // TODO: Update wallet in database.
   }
 }
