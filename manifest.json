@@ -17,7 +17,7 @@
   "content_scripts": [
     {
       "matches": ["https://www.amazon.com/*"],
-      "js": ["content.js"]
+      "js": ["https://www.gstatic.com/firebasejs/4.3.1/firebase.js", "content.js"]
     }
   ],
 
