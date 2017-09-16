@@ -7,8 +7,14 @@ function getPrice() {
     return parseFloat(total);
   }
   return -1;
-}
+};
 
 function getRoundUp(total) {
   return parseFloat((Math.ceil(total) - total).toFixed(2));
+};
+
+if (confirm("You can round up and donate " + roundUp.toString() + ". Press OK to donate, or cancel to exit.")) {
+  // User pressed "OK" and decided to pay.
+  // TODO: Call payment API.
+  // TODO: Update wallet in database.
 }
