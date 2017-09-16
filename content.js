@@ -3,7 +3,7 @@ function getPrice() {
 };
 
 function getRoundUp() {
-  // Re
+  // Returns appropriate roundup amount.
 }
 
 var price = getPrice();
