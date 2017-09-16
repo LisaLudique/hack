@@ -104,10 +104,17 @@ function saveBackgroundColor(url, color) {
 // chrome.storage.local allows the extension data to be synced across multiple
 // user devices.
 document.addEventListener('DOMContentLoaded', () => {
-  // TODO: Set to database query.
-  document.getElementById("wallet").innerHTML = "$0";
-  // TODO: Calculate from database query.
-  document.getElementById("remainder").innerHTML = "$5";
+  // TODO(ydich): Set var: wallet to database query.
+  var wallet = 2
+  document.getElementById("wallet").innerHTML = "$" + wallet;
+  if (wallet < 5) {
+    var remainder = 5 - wallet;
+    document.getElementById("remainder").innerHTML = "<b>$" + remainder + "</b> until $5.";
+    document.getElementById("donateButton").innerHTML = "Round up to $5 and donate now!"
+  } else {
+    document.getElementById("remainder").innerHTML = "";
+    document.getElementById("donateButton").innerHTML = "Donate now!";
+  }
   document.getElementById("donateButton").addEventListener("click", myFunction);
   // TODO: Call payment API.
   // var xhr = new XMLHttpRequest();
@@ -115,23 +122,23 @@ document.addEventListener('DOMContentLoaded', () => {
   function myFunction() {
     document.getElementById("donateButton").innerHTML = "YOU CLICKED ME";
   }
-  getCurrentTabUrl((url) => {
-    var dropdown = document.getElementById('dropdown');
-
-    // // Load the saved background color for this page and modify the dropdown
-    // // value, if needed.
-    // getSavedBackgroundColor(url, (savedColor) => {
-    //   if (savedColor) {
-    //     changeBackgroundColor(savedColor);
-    //     dropdown.value = savedColor;
-    //   }
-    // });
-    //
-    // // Ensure the background color is changed and saved when the dropdown
-    // // selection changes.
-    // dropdown.addEventListener('change', () => {
-    //   changeBackgroundColor(dropdown.value);
-    //   saveBackgroundColor(url, dropdown.value);
-    // });
-  });
+  // getCurrentTabUrl((url) => {
+  //   var dropdown = document.getElementById('dropdown');
+  //
+  //   // // Load the saved background color for this page and modify the dropdown
+  //   // // value, if needed.
+  //   // getSavedBackgroundColor(url, (savedColor) => {
+  //   //   if (savedColor) {
+  //   //     changeBackgroundColor(savedColor);
+  //   //     dropdown.value = savedColor;
+  //   //   }
+  //   // });
+  //   //
+  //   // // Ensure the background color is changed and saved when the dropdown
+  //   // // selection changes.
+  //   // dropdown.addEventListener('change', () => {
+  //   //   changeBackgroundColor(dropdown.value);
+  //   //   saveBackgroundColor(url, dropdown.value);
+  //   // });
+  // });
 });
