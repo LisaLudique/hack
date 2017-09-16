@@ -1,4 +1,6 @@
 // Background logic once purchase has been made. Update database.
+
+
 // Initialize Firebase
   var config = {
     apiKey: "AIzaSyCEVBQEHtw6q0VZV8-G0jbOTfAuresxXmI",
