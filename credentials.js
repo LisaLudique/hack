@@ -175,7 +175,7 @@ window.onload = function() {
       console.error(error);
     });
     // testing purposes here only
-
+    console.log(wallet);
     // TODO(ydich): Set var: wallet to database query.
     var history = await firebase.database().ref(currentUser.uid).child("history").once("value").then(function(snapshot) {
       // The Promise was "fulfilled" (it succeeded).
@@ -220,7 +220,7 @@ window.onload = function() {
       document.getElementById("updateButton").addEventListener("click", updateSettings);
       document.getElementById("donateButton").addEventListener("click", pay);
       document.getElementById("signOut").addEventListener("click", signOut);
-      document.getElementById("stat").innerHTML = history;
+      document.getElementById("stat").innerHTML = "$" + history;
       document.getElementById("charity").innerHTML = charity;
     }
 
@@ -262,7 +262,12 @@ window.onload = function() {
       var access_token;
       var header;
       var donation_id;
-
+      if (wallet < 5) {
+        payment = 5;
+      } else {
+        payment = wallet;
+      }
+      console.log(payment);
       // TODO: Pass authentication needs (client id, secret key) from
       // form/database to call.
       $.ajax({
@@ -335,52 +340,47 @@ window.onload = function() {
             return_url: 'https://www.paypal.com/return',
             cancel_url: 'https://www.paypal.com/cancel'
           }
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: header
-        },
-        dataType: 'json',
-        success: function(data) {
-          console.log(data);
-          donation_id = data.id;
-          document.getElementById('savings').innerHTML =
-            'Your payment (ID: ' + donation_id +
-            ') has been created and can be approved through your PayPal account. Thanks for donating!';
-        },
-        error: function(xhr, ajaxOptions, thrownError) {
-          console.log(xhr.status);
-          console.log(thrownError);
-          console.log(xhr.responseText);
-        }
-      });
-
-          // Reset all. TODO: Reset value in database too and add to history.
-          // Maybe only accummulate total donations per month to avoid overflow?
-        //   wallet = await firebase.database().ref(currentUser.uid).child("amount").remove().then(function(snapshot) {
-        // // The Promise was "fulfilled" (it succeeded).
-        //         return 0;
-        //       }, function(error) {
-        //         // The Promise was rejected.
-        //         console.error(error);
-        //       });;
-        if (currentUser) {
-          var cur = firebase.database()
-            .ref(currentUser.uid)
-            .child('history')
-            .once('value');
-          cur.then(function(snapshot) {
-              var snap = snapshot.val();
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: header
+          },
+          dataType: 'json',
+          success: function(data) {
+            console.log(data);
+            donation_id = data.id;
+            document.getElementById('savings').innerHTML =
+              'Your payment (ID: ' + donation_id +
+              ') has been created and can be approved through your PayPal account. Thanks for donating!';
+          },
+          error: function(xhr, ajaxOptions, thrownError) {
+            console.log(xhr.status);
+            console.log(thrownError);
+            console.log(xhr.responseText);
+          }
+        });
+      console.log(payment);
+      if (currentUser) {
+        var cur = firebase.database()
+          .ref(currentUser.uid)
+          .child('history')
+          .once('value');
+        var paymenta = payment;
+        console.log(paymenta);
+        cur.then(function(snapshot) {
+            var snap = snapshot.val();
               if (isNaN(parseFloat(snap, 10))) {
                 return 0;
               }
               return snap;
             })
             .then(function(value) {
+              console.log(value);
+              console.log(paymenta);
               return firebase.database()
                 .ref(currentUser.uid)
                 .child('history')
-                .set(value + payment);
+                .set(value + paymenta);
             });
         }
           wallet = 0;
