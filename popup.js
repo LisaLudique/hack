@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function signOut(){
     firebase.auth().signOut().then(function() {
-      // this is where we can put to clear chrome storage 
+      // this is where we can put to clear chrome storage
       chrome.storage.sync.set({'userId': undefined}, function() {
         // Notify that we saved.
         console.log("set signout")
@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("please work");
   }
   function updateSettings() {
-    // Query here too.
+    // Query here too. Update database!!!
     clientId = $('#clientid').val();
     console.log(clientId);
     secret = $('#secret').val();
@@ -216,27 +216,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(xhr.responseText);
       }
     });
-
-    // // Get pending payment details.
-    // $.ajax({
-    //   url: 'https://api.sandbox.paypal.com/v1/payments/payment/' + donation_id,
-    //   type: 'GET',
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     Authorization: header
-    //   },
-    //   dataType: 'json',
-    //   success: function(data) {
-    //     console.log(data);
-    //     document.getElementById("savings").innerHTML = "Your payment (ID: " + donation_id + ") has been created and can be approved through your PayPal account. Thanks for donating!";
-    //   },
-    //   error: function(xhr, ajaxOptions, thrownError) {
-    //     console.log(xhr.status);
-    //     console.log(thrownError);
-    //     console.log(xhr.responseText);
-    //     console.log('https://api.sandbox.paypal.com/v1/payments/payment/' + donation_id);
-    //   }
-    // });
 
     // Reset all. TODO: Reset value in database too and add to history.
     // Maybe only accummulate total donations per month to avoid overflow?
