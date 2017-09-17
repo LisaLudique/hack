@@ -4,20 +4,99 @@
 <head>
 	<title>Heart of Gold</title>
 	<style type="text/css">
+		@import url('https://fonts.googleapis.com/css?family=Cormorant+Garamond');
+		@import url('https://fonts.googleapis.com/css?family=Crimson+Text');
+		@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro');
 		body {
-			margin: 10px;
-			white-space: normal;
-			min-width: 200px;
-			max-width: 200px;
+			border-color: #eee8aa;
+			border-style: solid;
+			border-width: 1px;
 		}
 
-		h1 {
-			font-size: 15px;
+		#content {
+			margin: 40px;
+			white-space: normal;
+			min-width: 250px;
+			max-width: 250px;
+			font-family: 'Crimson Text', serif;
+		}
+
+		#wallet,
+		#stat,
+		#remainder {
+			font-family: 'Source Code Pro', Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+			background-color: #eee8aa
+		}
+
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6 {
+			margin: 1em 0 .5em 0;
+			line-height: 1.2;
+			font-weight: 400;
+			letter-spacing: -.02em;
+			font-family: 'Cormorant Garamond', serif;
+			background-color:
+		}
+
+		h2 {
+			margin-bottom: .75em;
+			line-height: 1;
+			border-bottom: 1px solid #eee;
 		}
 
 		input button select {
 			float: right;
 			clear: both;
+			font-family: 'Cormorant Garamond', serif;
+			border: 1px solid #eee8aa;
+		}
+
+		input:focus,select:focus,textarea:focus,button:focus {
+			outline:none;
+		}
+
+		select {
+	    -webkit-padding-end: 20px;
+	    -moz-padding-end: 20px;
+	    -webkit-padding-start: 2px;
+	    -moz-padding-start: 2px;
+			border: 1px solid #FFF;
+			border-radius: 2px;
+			background-color: #eee8aa;
+			/* remove default arrow */
+			/* add custom arrow */
+			background-repeat: no-repeat;
+			background-position: right;
+			font-family: 'Source Code Pro';
+		}
+
+		.button {
+			background-color: white;
+			border: none;
+			color: black;
+			font-family: 'Source Code Pro', serif;
+			-webkit-transition-duration: 0.4s;
+			/* Safari */
+			box-shadow: 1px 1px 1px #999;
+		}
+
+		.button:active {
+			background-color: #eee8aa;
+		}
+
+		.hover {
+			background-color: white;
+			color: black;
+			border: 1px solid #eee8aa;
+		}
+
+		.hover:hover {
+			background-color: #eee8aa;
+			color: black;
 		}
 
 		#container {
@@ -29,31 +108,26 @@
 </head>
 
 <body>
-	<center>
-		<h1><img src="heart.png"> Heart of Gold <img src="heart.png"></h1>
+	<div id="content">
+		<center>
+			<h1><img src="heart.png"> Heart of Gold <img src="heart.png"></h1></center>
+		<h2> Round-Ups </h2>
 		<div id="savings">
-			You've collected <b><span id="wallet"></span></b> so far.<br>
-			<span id="remainder"></span><br><br>
-			<button id="donateButton">Donate now!</button>
+			You've collected <b><span id="wallet"></span></b> so far. <span id="before"></span><span id="remainder"></span><span id="until"></span><br><br>
+			<center><button class="button hover" id="donateButton">Donate now!</button></center>
 		</div>
-		<br>
-		<hr>
 		<div id="settings">
-			<h3> Settings </h3> </center>
-			PayPal ID: <input type="text" name="clientid" id="clientid"><br><br>
-			Passcode: <input type="password" name="secret" id="secret"><br><br>
-			Charities: <select name="cars" id="charity">
+			<h2> Settings </h2> PayPal ID: <input type="text" name="clientid" id="clientid"><br><br> Passcode: <input type="password" name="secret" id="secret"><br><br> Charities: <select name="cars" id="charity">
     		<option value="redcross">Red Cross</option>
     		<option value="charitywater">charity: water</option>
   		</select><br><br>
-			<center><button id="updateButton">Update settings</button>
+			<center><button class="button hover" id="updateButton">Update settings</button>
 		</div>
-		<br><br>
-		<hr>
 		<div id="stats">
-			<h3> Impact </h3></center>
-			You've donated ___ over the past month!
+			<h2> Impact </h2></center>
+			You've donated <span id="stat">a lot</span> over the past month!
 		</div>
+	</div>
 </body>
 
 </html>
