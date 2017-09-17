@@ -185,12 +185,20 @@ window.onload = function() {
       console.error(error);
     });
 
+    // TODO(ydich): Set var: wallet to database query.
+    var charity = await firebase.database().ref(currentUser.uid).child("charity").once("value").then(function(snapshot) {
+      // The Promise was "fulfilled" (it succeeded).
+      return snapshot.val();
+    }, function(error) {
+      // The Promise was rejected.
+      console.error(error);
+    });
+
     var payment;
     var access_token;
     // TODO(ydich): Query clientID, secret, charity.
     var clientId;
     var secret;
-    var charity;
     update();
 
     function update() {
@@ -212,6 +220,7 @@ window.onload = function() {
       document.getElementById("donateButton").addEventListener("click", pay);
       document.getElementById("signOut").addEventListener("click", signOut);
       document.getElementById("stat").innerHTML = total;
+      document.getElementById("charity").innerHTML = charity;
     }
 
     function signOut() {
@@ -231,13 +240,13 @@ window.onload = function() {
       console.log(clientId);
       secret = $('#secret').val();
       console.log(secret);
-      charity = $('#charity').val();
+      charity = $('#charities').val();
       console.log(charity);
       firebase.database()
         .ref(currentUser.uid)
         .child('clientId')
         .set(clientId);
-        firebase.database()
+      firebase.database()
           .ref(currentUser.uid)
           .child('secret')
           .set(secret);
@@ -245,6 +254,7 @@ window.onload = function() {
         .ref(currentUser.uid)
         .child('charity')
         .set(charity);
+      document.getElementById("charity").innerHTML = charity;
     }
 
     function pay() {
