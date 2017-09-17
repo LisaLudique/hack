@@ -25,3 +25,4 @@ function initApp() {
 window.onload = function() {
   initApp();
 };
+  //  create a function that fire; in the background; will only be loaded once s
