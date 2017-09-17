@@ -19,7 +19,7 @@ function checkPage() {
     found = true;
     var roundUp = getRoundUp(price);
     if (confirm("You can round up and donate " + roundUp.toString() + ". Press OK to add to your donation wallet, or cancel to exit.")) {
-      // TODO(ydich): Update wallet in database.
+      // TODO: Generate ID
       var cur = firebase.database().ref(ID).child("amount").once("value");
       cur.then(function(snapshot) {
         var snap = snapshot.val();
