@@ -101,6 +101,10 @@ document.addEventListener('DOMContentLoaded', () => {
   function signOut(){
     firebase.auth().signOut().then(function() {
       // this is where we can put to clear chrome storage 
+      chrome.storage.sync.set({'userId': undefined}, function() {
+        // Notify that we saved.
+        message('User ID saved');
+      });
       console.log('Signed Out');
     }, function(error) {
       console.error('Sign Out Error', error);
