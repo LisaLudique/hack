@@ -16,8 +16,8 @@
 
   "content_scripts": [{
     "matches": ["https://www.amazon.com/*"],
-    "js": ["https://www.gstatic.com/firebasejs/4.3.1/firebase.js",
-      "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js",
+    "js": [
+      "jquery.js",
       "content.js"
     ]
   }],
