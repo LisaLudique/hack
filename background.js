@@ -17,18 +17,7 @@ firebase.initializeApp(config);
 function initApp() {
   // Listen for auth state changes.
   firebase.auth().onAuthStateChanged(function(user) {
-    if (user) {
-      chrome.browserAction.setPopup({
-        popup: 'popup.html'
-      });
-      
-    } else {
-      chrome.browserAction.setPopup({
-        popup: 'credentials.html'
-      });
-    }
     console.log('User state change detected from the Background script of the Chrome Extension:', user);
-
   });
 }
 

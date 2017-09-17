@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // this is where we can put to clear chrome storage
       chrome.storage.sync.set({'userId': undefined}, function() {
         // Notify that we saved.
-        message('User ID saved');
+        console.log("set signout")
       });
       console.log('Signed Out');
       document.getElementById("content").innerHTML = "<center>You've been signed out!</center>";
