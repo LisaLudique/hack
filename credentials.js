@@ -2,16 +2,16 @@
 // TODO(DEVELOPER): Change the values below using values from the initialization snippet: Firebase Console > Overview > Add Firebase to your web app.
 // Initialize Firebase
 
-  // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyCEVBQEHtw6q0VZV8-G0jbOTfAuresxXmI",
-    authDomain: "heartofgold-2496d.firebaseapp.com",
-    databaseURL: "https://heartofgold-2496d.firebaseio.com",
-    projectId: "heartofgold-2496d",
-    storageBucket: "heartofgold-2496d.appspot.com",
-    messagingSenderId: "536324270949"
-  };
-  firebase.initializeApp(config);
+// Initialize Firebase
+var config = {
+  apiKey: "AIzaSyCEVBQEHtw6q0VZV8-G0jbOTfAuresxXmI",
+  authDomain: "heartofgold-2496d.firebaseapp.com",
+  databaseURL: "https://heartofgold-2496d.firebaseio.com",
+  projectId: "heartofgold-2496d",
+  storageBucket: "heartofgold-2496d.appspot.com",
+  messagingSenderId: "536324270949"
+};
+firebase.initializeApp(config);
 
 
 /**
@@ -46,6 +46,10 @@ function initApp() {
       document.getElementById('quickstart-sign-in-status').textContent = 'Signed in';
       document.getElementById('quickstart-account-details').textContent = JSON.stringify(user, null, '  ');
       // [END_EXCLUDE]
+      chrome.storage.sync.set({'userId': uid}, function() {
+          // Notify that we saved.
+          message('Settings saved');
+        });
     } else {
       // Let's try to get a Google auth token programmatically.
       // [START_EXCLUDE]
@@ -59,6 +63,7 @@ function initApp() {
   // [END authstatelistener]
 
   document.getElementById('quickstart-button').addEventListener('click', startSignIn, false);
+
 }
 
 /**
@@ -100,6 +105,8 @@ function startSignIn() {
     startAuth(true);
   }
 }
+
+
 
 window.onload = function() {
   initApp();

@@ -83,8 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     document.getElementById("updateButton").addEventListener("click", updateSettings);
     document.getElementById("donateButton").addEventListener("click", pay);
+    document.getElementById("signOut").addEventListener("click", firebase.auth().signOut);
+
   }
 
+  
   function updateSettings() {
     // Query here too.
     clientId = $('#clientid').val();
