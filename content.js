@@ -20,11 +20,14 @@ function checkPage() {
     var roundUp = getRoundUp(price);
     if (confirm("You can round up and donate " + roundUp.toString() + ". Press OK to add to your donation wallet, or cancel to exit.")) {
       // TODO: Generate ID
+      // On auth state changed listener, reacts to changes in the authentication state.
+      // firebase.auth(signin)
       var cur = firebase.database().ref(ID).child("amount").once("value");
       cur.then(function(snapshot) {
         var snap = snapshot.val();
-        if (isNaN(snap)){
+        if (isNaN(snap)) {
           return 0;
+        }
         return snap;
       }).then(function(value) {
         firebase.database().ref(ID).child("amount").set(value + roundUp);
