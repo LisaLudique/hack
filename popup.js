@@ -107,6 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // TODO(ydich): Set var: wallet to database query.
   var wallet = 20 // testing purposes here only
   var payment;
+  var access_token;
   update();
 
   function update() {
@@ -126,9 +127,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function pay() {
-    // TODO: authentication
+    // TODO: Pass authentication needs (client id, secret key) from form to call.
+    var access_token;
     $.ajax({
       url: 'https://api.sandbox.paypal.com/v1/oauth2/token',
+      async: false,
       type: 'POST',
       data: 'grant_type=client_credentials',
       headers: {
@@ -139,6 +142,8 @@ document.addEventListener('DOMContentLoaded', () => {
       dataType: 'json',
       success: function(data) {
         console.log(data.access_token);
+        access_token = data.access_token;
+        console.log(access_token);
       },
       error: function(xhr, ajaxOptions, thrownError) {
         console.log(xhr.status);
@@ -146,6 +151,8 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(xhr.responseText);
       }
     });
+    header = "Bearer " + access_token;
+
     // TODO: Call payment API.
     $.ajax({
       url: 'https://api.sandbox.paypal.com/v1/payments/payment',
@@ -157,41 +164,19 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         transactions: [{
           "amount": {
-            "total": "30.11",
-            "currency": "USD",
-            "details": {
-              "subtotal": "30.00",
-              "tax": "0.07",
-              "shipping": "0.03",
-              "handling_fee": "1.00",
-              "shipping_discount": "-1.00",
-              "insurance": "0.01"
-            }
+            "total": payment.toString(),
+            "currency": "USD"
           },
-          "description": "The payment transaction description.",
-          "custom": "EBAY_EMS_90048630024435",
-          "invoice_number": "48787589673",
+          "description": "Heart of Gold charity donation.",
           "payment_options": {
             "allowed_payment_method": "INSTANT_FUNDING_SOURCE"
           },
-          "soft_descriptor": "ECHI5786786",
           "item_list": {
             "items": [{
-                "name": "hat",
-                "description": "Brown hat.",
-                "quantity": "5",
-                "price": "3",
-                "tax": "0.01",
-                "sku": "1",
-                "currency": "USD"
-              },
-              {
-                "name": "handbag",
-                "description": "Black handbag.",
+                "name": "donation",
+                "description": "Donation to charity",
                 "quantity": "1",
-                "price": "15",
-                "tax": "0.02",
-                "sku": "product34",
+                "price": payment.toString(),
                 "currency": "USD"
               }
             ],
@@ -215,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }),
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer A21AAHOfr1hgTKHQ41XftovWfp06ozwmDsmxKSGTZYG9ASSamVks9Ufn88AAMp0sR4vzfPpacZ1RQHgx0hemSr9al7o8JZt5Q"
+        Authorization: header
       },
       dataType: 'json',
       success: function(data) {
@@ -227,27 +212,12 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(xhr.responseText);
       }
     });
-    // console.log($);
-    // $.post("https://api.sandbox.paypal.com/v1/payments/payment", {})
-    //   .done(function(data) {console.log(data);});
+
     // Reset all. TODO: Reset value in database too.
-    wallet = 0
+    wallet = 0;
+    payment = 0;
     update();
   }
-
-  // var wallet = 20
-  // document.getElementById("wallet").innerHTML = "$" + wallet;
-  // if (wallet < 5) {
-  //   var remainder = 5 - wallet;
-  //   document.getElementById("remainder").innerHTML = "<b>$" + remainder + "</b> until $5.";
-  //   document.getElementById("donateButton").innerHTML = "Round up to $5 and donate now!"
-  //   var payment = 5
-  // } else {
-  //   document.getElementById("remainder").innerHTML = "";
-  //   document.getElementById("donateButton").innerHTML = "Donate now!";
-  //   var payment = wallet
-  // }
-  // document.getElementById("donateButton").addEventListener("click", pay);
 
   // getCurrentTabUrl((url) => {
   //   var dropdown = document.getElementById('dropdown');
