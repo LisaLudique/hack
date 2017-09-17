@@ -1,8 +1,5 @@
-// TODO(DEVELOPER): Change the values below using values from the initialization
-// snippet: Firebase Console > Overview > Add Firebase to your web app.
-// Initialize Firebase
 
-// Initialize Firebase
+
 var config = {
   apiKey: 'AIzaSyCEVBQEHtw6q0VZV8-G0jbOTfAuresxXmI',
   authDomain: 'heartofgold-2496d.firebaseapp.com',
@@ -166,7 +163,7 @@ function getCurrentTabUrl(callback) {
 window.onload = function() {
   initApp().then(async() => {
 
-    // TODO(ydich): Set var: wallet to database query.
+    // Set var: wallet to database query.
     var wallet = await firebase.database().ref(currentUser.uid).child("amount").once("value").then(function(snapshot) {
       // The Promise was "fulfilled" (it succeeded).
       return snapshot.val();
@@ -176,7 +173,7 @@ window.onload = function() {
     });
     // testing purposes here only
     console.log(wallet);
-    // TODO(ydich): Set var: wallet to database query.
+    // Set var: wallet to database query.
     var history = await firebase.database().ref(currentUser.uid).child("history").once("value").then(function(snapshot) {
       // The Promise was "fulfilled" (it succeeded).
       return snapshot.val();
@@ -185,7 +182,7 @@ window.onload = function() {
       console.error(error);
     });
 
-    // TODO(ydich): Set var: wallet to database query.
+    // Set var: wallet to database query.
     var charity = await firebase.database().ref(currentUser.uid).child("charity").once("value").then(function(snapshot) {
       // The Promise was "fulfilled" (it succeeded).
       return snapshot.val();
@@ -196,7 +193,7 @@ window.onload = function() {
 
     var payment;
     var access_token;
-    // TODO(ydich): Query clientID, secret, charity.
+    //Query clientID, secret, charity.
     var clientId;
     var secret;
     var history;
