@@ -2,16 +2,16 @@
 // TODO(DEVELOPER): Change the values below using values from the initialization snippet: Firebase Console > Overview > Add Firebase to your web app.
 // Initialize Firebase
 
-  // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyCEVBQEHtw6q0VZV8-G0jbOTfAuresxXmI",
-    authDomain: "heartofgold-2496d.firebaseapp.com",
-    databaseURL: "https://heartofgold-2496d.firebaseio.com",
-    projectId: "heartofgold-2496d",
-    storageBucket: "heartofgold-2496d.appspot.com",
-    messagingSenderId: "536324270949"
-  };
-  firebase.initializeApp(config);
+// Initialize Firebase
+var config = {
+  apiKey: "AIzaSyCEVBQEHtw6q0VZV8-G0jbOTfAuresxXmI",
+  authDomain: "heartofgold-2496d.firebaseapp.com",
+  databaseURL: "https://heartofgold-2496d.firebaseio.com",
+  projectId: "heartofgold-2496d",
+  storageBucket: "heartofgold-2496d.appspot.com",
+  messagingSenderId: "536324270949"
+};
+firebase.initializeApp(config);
 
 
 /**

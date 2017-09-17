@@ -1,3 +1,14 @@
+// Initialize Firebase
+var config = {
+  apiKey: "AIzaSyCEVBQEHtw6q0VZV8-G0jbOTfAuresxXmI",
+  authDomain: "heartofgold-2496d.firebaseapp.com",
+  databaseURL: "https://heartofgold-2496d.firebaseio.com",
+  projectId: "heartofgold-2496d",
+  storageBucket: "heartofgold-2496d.appspot.com",
+  messagingSenderId: "536324270949"
+};
+firebase.initializeApp(config);
+
 // Returns negative number if not a transaction page. Otherwise gets price.
 function getPrice() {
   var elts = document.getElementsByClassName("grand-total-price");
@@ -22,6 +33,7 @@ function checkPage() {
       // TODO: Generate ID
       // On auth state changed listener, reacts to changes in the authentication state.
       // firebase.auth(signin)
+      var ID = firebase.auth().currentUser.uid;
       var cur = firebase.database().ref(ID).child("amount").once("value");
       cur.then(function(snapshot) {
         var snap = snapshot.val();
