@@ -47,54 +47,6 @@ function getCurrentTabUrl(callback) {
   // alert(url); // Shows "undefined", because chrome.tabs.query is async.
 }
 
-/**
- * Change the background color of the current page.
- *
- * @param {string} color The new background color.
- */
-function changeBackgroundColor(color) {
-  var script = 'document.body.style.backgroundColor="' + color + '";';
-  // See https://developer.chrome.com/extensions/tabs#method-executeScript.
-  // chrome.tabs.executeScript allows us to programmatically inject JavaScript
-  // into a page. Since we omit the optional first argument "tabId", the script
-  // is inserted into the active tab of the current window, which serves as the
-  // default.
-  chrome.tabs.executeScript({
-    code: script
-  });
-}
-
-/**
- * Gets the saved background color for url.
- *
- * @param {string} url URL whose background color is to be retrieved.
- * @param {function(string)} callback called with the saved background color for
- *     the given url on success, or a falsy value if no color is retrieved.
- */
-function getSavedBackgroundColor(url, callback) {
-  // See https://developer.chrome.com/apps/storage#type-StorageArea. We check
-  // for chrome.runtime.lastError to ensure correctness even when the API call
-  // fails.
-  chrome.storage.sync.get(url, (items) => {
-    callback(chrome.runtime.lastError ? null : items[url]);
-  });
-}
-
-/**
- * Sets the given background color for url.
- *
- * @param {string} url URL for which background color is to be saved.
- * @param {string} color The background color to be saved.
- */
-function saveBackgroundColor(url, color) {
-  var items = {};
-  items[url] = color;
-  // See https://developer.chrome.com/apps/storage#type-StorageArea. We omit the
-  // optional callback since we don't need to perform any action once the
-  // background color is saved.
-  chrome.storage.sync.set(items);
-}
-
 // This extension loads the saved background color for the current tab if one
 // exists. The user can select a new background color from the dropdown for the
 // current page, and it will be saved as part of the extension's isolated
@@ -108,10 +60,14 @@ document.addEventListener('DOMContentLoaded', () => {
   var wallet = 20 // testing purposes here only
   var payment;
   var access_token;
+  // TODO(ydich): Query clientID, secret, charity.
+  var clientId;
+  var secret;
+  var charity;
   update();
 
   function update() {
-    // wallet = ?
+    // wallet = ?, query
     document.getElementById("wallet").innerHTML = "$" + wallet;
     if (wallet < 5) {
       var remainder = 5 - wallet;
@@ -123,7 +79,18 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById("donateButton").innerHTML = "Donate now!";
       payment = wallet
     }
+    document.getElementById("updateButton").addEventListener("click", updateSettings);
     document.getElementById("donateButton").addEventListener("click", pay);
+  }
+
+  function updateSettings() {
+    // Query here too.
+    clientId = $('#clientid').val();
+    console.log(clientId);
+    secret = $('#secret').val();
+    console.log(secret);
+    charity = $('#charity').val();
+    console.log(charity);
   }
 
   function pay() {
@@ -238,29 +205,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Reset all. TODO: Reset value in database too.
+    // Reset all. TODO: Reset value in database too and add to history.
+    // Maybe only accummulate total donations per month to avoid overflow?
     wallet = 0;
     payment = 0;
     update();
   }
-
-  // getCurrentTabUrl((url) => {
-  //   var dropdown = document.getElementById('dropdown');
-  //
-  //   // // Load the saved background color for this page and modify the dropdown
-  //   // // value, if needed.
-  //   // getSavedBackgroundColor(url, (savedColor) => {
-  //   //   if (savedColor) {
-  //   //     changeBackgroundColor(savedColor);
-  //   //     dropdown.value = savedColor;
-  //   //   }
-  //   // });
-  //   //
-  //   // // Ensure the background color is changed and saved when the dropdown
-  //   // // selection changes.
-  //   // dropdown.addEventListener('change', () => {
-  //   //   changeBackgroundColor(dropdown.value);
-  //   //   saveBackgroundColor(url, dropdown.value);
-  //   // });
-  // });
 });

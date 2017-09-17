@@ -2,15 +2,21 @@
 <html>
 
 <head>
-	<title>Round Up!</title>
+	<title>Heart of Gold</title>
 	<style type="text/css">
 		body {
 			margin: 10px;
 			white-space: nowrap;
+			min-width: 200px;
 		}
 
 		h1 {
 			font-size: 15px;
+		}
+
+		input button select {
+			float: right;
+			clear: both;
 		}
 
 		#container {
@@ -23,18 +29,24 @@
 
 <body>
 	<center>
-		<h1> Heart of Gold </h1>
-		<div id="container">
+		<h1><img src="heart.png"> Heart of Gold <img src="heart.png"></h1>
+		<div id="savings">
 			You've collected <b><span id="wallet"></span></b> so far.<br>
 			<span id="remainder"></span><br><br>
 			<button id="donateButton">Donate now!</button>
 		</div>
-	</center>
-	<!-- <script>
-		var wallet = 0; // TODO: Query from wallet database.
-		document.getElementById("wallet").innerHTML = wallet;
-		document.getElementById("p1").innerHTML = "New text!";
-	</script> -->
+		<br>
+		<hr>
+		<div id="settings">
+			<h3> Settings </h3> </center>
+	PayPal ID: <input type="text" name="clientid" id="clientid"><br><br>
+	Passcode: <input type="password" name="secret" id="secret"><br><br>
+	Charities: <select name="cars" id="charity">
+    <option value="redcross">Red Cross</option>
+    <option value="charitywater">charity: water</option>
+  </select><br><br>
+	<center><button id="updateButton">Update settings</button></center>
+	</div>
 </body>
 
 </html>
