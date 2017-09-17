@@ -8,6 +8,17 @@
  * @param {function(string)} callback called when the URL of the current tab
  *   is found.
  */
+
+ var config = {
+  apiKey: "AIzaSyCEVBQEHtw6q0VZV8-G0jbOTfAuresxXmI",
+  authDomain: "heartofgold-2496d.firebaseapp.com",
+  databaseURL: "https://heartofgold-2496d.firebaseio.com",
+  projectId: "heartofgold-2496d",
+  storageBucket: "heartofgold-2496d.appspot.com",
+  messagingSenderId: "536324270949"
+};
+firebase.initializeApp(config);
+
 function getCurrentTabUrl(callback) {
   // Query filter to be passed to chrome.tabs.query - see
   // https://developer.chrome.com/extensions/tabs#method-query
@@ -81,11 +92,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     document.getElementById("updateButton").addEventListener("click", updateSettings);
     document.getElementById("donateButton").addEventListener("click", pay);
-    document.getElementById("signOut").addEventListener("click", firebase.auth().signOut);
+    document.getElementById("signOut").addEventListener("click", signOut);
 
   }
 
-  
+  function signOut(){
+    firebase.auth().signOut().then(function() {
+      // this is where we can put to clear chrome storage 
+      console.log('Signed Out');
+    }, function(error) {
+      console.error('Sign Out Error', error);
+    });
+
+  }
+  function printSomething() {
+    console.log("please work"); 
+  }
   function updateSettings() {
     // Query here too.
     clientId = $('#clientid').val();

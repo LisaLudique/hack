@@ -48,7 +48,7 @@ function initApp() {
       // [END_EXCLUDE]
       chrome.storage.sync.set({'userId': uid}, function() {
           // Notify that we saved.
-          message('Settings saved');
+          message('User ID saved');
         });
     } else {
       // Let's try to get a Google auth token programmatically.
