@@ -22,6 +22,10 @@ function checkPage() {
       // TODO: Generate ID
       // On auth state changed listener, reacts to changes in the authentication state.
       // firebase.auth(signin)
+
+      var user = firebase.auth().currentUser;
+      var ID = user.uid; 
+
       var cur = firebase.database().ref(ID).child("amount").once("value");
       cur.then(function(snapshot) {
         var snap = snapshot.val();
