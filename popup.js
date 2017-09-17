@@ -47,54 +47,6 @@ function getCurrentTabUrl(callback) {
   // alert(url); // Shows "undefined", because chrome.tabs.query is async.
 }
 
-/**
- * Change the background color of the current page.
- *
- * @param {string} color The new background color.
- */
-function changeBackgroundColor(color) {
-  var script = 'document.body.style.backgroundColor="' + color + '";';
-  // See https://developer.chrome.com/extensions/tabs#method-executeScript.
-  // chrome.tabs.executeScript allows us to programmatically inject JavaScript
-  // into a page. Since we omit the optional first argument "tabId", the script
-  // is inserted into the active tab of the current window, which serves as the
-  // default.
-  chrome.tabs.executeScript({
-    code: script
-  });
-}
-
-/**
- * Gets the saved background color for url.
- *
- * @param {string} url URL whose background color is to be retrieved.
- * @param {function(string)} callback called with the saved background color for
- *     the given url on success, or a falsy value if no color is retrieved.
- */
-function getSavedBackgroundColor(url, callback) {
-  // See https://developer.chrome.com/apps/storage#type-StorageArea. We check
-  // for chrome.runtime.lastError to ensure correctness even when the API call
-  // fails.
-  chrome.storage.sync.get(url, (items) => {
-    callback(chrome.runtime.lastError ? null : items[url]);
-  });
-}
-
-/**
- * Sets the given background color for url.
- *
- * @param {string} url URL for which background color is to be saved.
- * @param {string} color The background color to be saved.
- */
-function saveBackgroundColor(url, color) {
-  var items = {};
-  items[url] = color;
-  // See https://developer.chrome.com/apps/storage#type-StorageArea. We omit the
-  // optional callback since we don't need to perform any action once the
-  // background color is saved.
-  chrome.storage.sync.set(items);
-}
-
 // This extension loads the saved background color for the current tab if one
 // exists. The user can select a new background color from the dropdown for the
 // current page, and it will be saved as part of the extension's isolated
@@ -107,10 +59,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // TODO(ydich): Set var: wallet to database query.
   var wallet = 20 // testing purposes here only
   var payment;
+  var access_token;
+  // TODO(ydich): Query clientID, secret, charity.
+  var clientId;
+  var secret;
+  var charity;
   update();
 
   function update() {
-    // wallet = ?
+    // wallet = ?, query
     document.getElementById("wallet").innerHTML = "$" + wallet;
     if (wallet < 5) {
       var remainder = 5 - wallet;
@@ -122,13 +79,29 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById("donateButton").innerHTML = "Donate now!";
       payment = wallet
     }
+    document.getElementById("updateButton").addEventListener("click", updateSettings);
     document.getElementById("donateButton").addEventListener("click", pay);
   }
 
+  function updateSettings() {
+    // Query here too.
+    clientId = $('#clientid').val();
+    console.log(clientId);
+    secret = $('#secret').val();
+    console.log(secret);
+    charity = $('#charity').val();
+    console.log(charity);
+  }
+
   function pay() {
-    // TODO: authentication
+    var access_token;
+    var header;
+    var donation_id;
+
+    // TODO: Pass authentication needs (client id, secret key) from form to call.
     $.ajax({
       url: 'https://api.sandbox.paypal.com/v1/oauth2/token',
+      async: false,
       type: 'POST',
       data: 'grant_type=client_credentials',
       headers: {
@@ -139,6 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
       dataType: 'json',
       success: function(data) {
         console.log(data.access_token);
+        access_token = data.access_token;
+        console.log(access_token);
       },
       error: function(xhr, ajaxOptions, thrownError) {
         console.log(xhr.status);
@@ -146,9 +121,12 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(xhr.responseText);
       }
     });
+    header = "Bearer " + access_token;
+
     // TODO: Call payment API.
     $.ajax({
       url: 'https://api.sandbox.paypal.com/v1/payments/payment',
+      async: false,
       type: 'POST',
       data: JSON.stringify({
         intent: "sale",
@@ -157,41 +135,19 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         transactions: [{
           "amount": {
-            "total": "30.11",
-            "currency": "USD",
-            "details": {
-              "subtotal": "30.00",
-              "tax": "0.07",
-              "shipping": "0.03",
-              "handling_fee": "1.00",
-              "shipping_discount": "-1.00",
-              "insurance": "0.01"
-            }
+            "total": payment.toString(),
+            "currency": "USD"
           },
-          "description": "The payment transaction description.",
-          "custom": "EBAY_EMS_90048630024435",
-          "invoice_number": "48787589673",
+          "description": "Heart of Gold charity donation.",
           "payment_options": {
             "allowed_payment_method": "INSTANT_FUNDING_SOURCE"
           },
-          "soft_descriptor": "ECHI5786786",
           "item_list": {
             "items": [{
-                "name": "hat",
-                "description": "Brown hat.",
-                "quantity": "5",
-                "price": "3",
-                "tax": "0.01",
-                "sku": "1",
-                "currency": "USD"
-              },
-              {
-                "name": "handbag",
-                "description": "Black handbag.",
+                "name": "donation",
+                "description": "Donation to charity",
                 "quantity": "1",
-                "price": "15",
-                "tax": "0.02",
-                "sku": "product34",
+                "price": payment.toString(),
                 "currency": "USD"
               }
             ],
@@ -215,7 +171,27 @@ document.addEventListener('DOMContentLoaded', () => {
       }),
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer A21AAHOfr1hgTKHQ41XftovWfp06ozwmDsmxKSGTZYG9ASSamVks9Ufn88AAMp0sR4vzfPpacZ1RQHgx0hemSr9al7o8JZt5Q"
+        Authorization: header
+      },
+      dataType: 'json',
+      success: function(data) {
+        console.log(data);
+        donation_id = data.id;
+      },
+      error: function(xhr, ajaxOptions, thrownError) {
+        console.log(xhr.status);
+        console.log(thrownError);
+        console.log(xhr.responseText);
+      }
+    });
+
+    // Get pending payment details.
+    $.ajax({
+      url: 'https://api.sandbox.paypal.com/v1/payments/payment/' + donation_id,
+      type: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: header
       },
       dataType: 'json',
       success: function(data) {
@@ -225,47 +201,14 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(xhr.status);
         console.log(thrownError);
         console.log(xhr.responseText);
+        console.log('https://api.sandbox.paypal.com/v1/payments/payment/' + donation_id);
       }
     });
-    // console.log($);
-    // $.post("https://api.sandbox.paypal.com/v1/payments/payment", {})
-    //   .done(function(data) {console.log(data);});
-    // Reset all. TODO: Reset value in database too.
-    wallet = 0
+
+    // Reset all. TODO: Reset value in database too and add to history.
+    // Maybe only accummulate total donations per month to avoid overflow?
+    wallet = 0;
+    payment = 0;
     update();
   }
-
-  // var wallet = 20
-  // document.getElementById("wallet").innerHTML = "$" + wallet;
-  // if (wallet < 5) {
-  //   var remainder = 5 - wallet;
-  //   document.getElementById("remainder").innerHTML = "<b>$" + remainder + "</b> until $5.";
-  //   document.getElementById("donateButton").innerHTML = "Round up to $5 and donate now!"
-  //   var payment = 5
-  // } else {
-  //   document.getElementById("remainder").innerHTML = "";
-  //   document.getElementById("donateButton").innerHTML = "Donate now!";
-  //   var payment = wallet
-  // }
-  // document.getElementById("donateButton").addEventListener("click", pay);
-
-  // getCurrentTabUrl((url) => {
-  //   var dropdown = document.getElementById('dropdown');
-  //
-  //   // // Load the saved background color for this page and modify the dropdown
-  //   // // value, if needed.
-  //   // getSavedBackgroundColor(url, (savedColor) => {
-  //   //   if (savedColor) {
-  //   //     changeBackgroundColor(savedColor);
-  //   //     dropdown.value = savedColor;
-  //   //   }
-  //   // });
-  //   //
-  //   // // Ensure the background color is changed and saved when the dropdown
-  //   // // selection changes.
-  //   // dropdown.addEventListener('change', () => {
-  //   //   changeBackgroundColor(dropdown.value);
-  //   //   saveBackgroundColor(url, dropdown.value);
-  //   // });
-  // });
 });
