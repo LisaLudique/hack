@@ -108,6 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
   var wallet = 20 // testing purposes here only
   var payment;
   update();
+
   function update() {
     // wallet = ?
     document.getElementById("wallet").innerHTML = "$" + wallet;
@@ -125,10 +126,110 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function pay() {
+    // TODO: authentication
+    $.ajax({
+      url: 'https://api.sandbox.paypal.com/v1/oauth2/token',
+      type: 'POST',
+      data: 'grant_type=client_credentials',
+      headers: {
+        "Accept-Language": "en_US",
+        "Accept": "application/json",
+        Authorization: "Basic " + btoa("AemE0f6yNJ_xqCkWQ4SqYqrd799WNpvnFBFSna9vnglagxms0of4frC8E5MAL5uJPsYD8sLJHVChVzAb:EAnNySUm_KDfDDEuqA9IX8zLYrJS3ybP39md8ZNnE2L5DBLAxjCS8GEZ2WujANS2i04pvvoqihN_kRhS")
+      },
+      dataType: 'json',
+      success: function(data) {
+        console.log(data.access_token);
+      },
+      error: function(xhr, ajaxOptions, thrownError) {
+        console.log(xhr.status);
+        console.log(thrownError);
+        console.log(xhr.responseText);
+      }
+    });
     // TODO: Call payment API.
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "https://api.sandbox.paypal.com/v1/payments/payment", true);
-
+    $.ajax({
+      url: 'https://api.sandbox.paypal.com/v1/payments/payment',
+      type: 'POST',
+      data: JSON.stringify({
+        intent: "sale",
+        payer: {
+          payment_method: "paypal"
+        },
+        transactions: [{
+          "amount": {
+            "total": "30.11",
+            "currency": "USD",
+            "details": {
+              "subtotal": "30.00",
+              "tax": "0.07",
+              "shipping": "0.03",
+              "handling_fee": "1.00",
+              "shipping_discount": "-1.00",
+              "insurance": "0.01"
+            }
+          },
+          "description": "The payment transaction description.",
+          "custom": "EBAY_EMS_90048630024435",
+          "invoice_number": "48787589673",
+          "payment_options": {
+            "allowed_payment_method": "INSTANT_FUNDING_SOURCE"
+          },
+          "soft_descriptor": "ECHI5786786",
+          "item_list": {
+            "items": [{
+                "name": "hat",
+                "description": "Brown hat.",
+                "quantity": "5",
+                "price": "3",
+                "tax": "0.01",
+                "sku": "1",
+                "currency": "USD"
+              },
+              {
+                "name": "handbag",
+                "description": "Black handbag.",
+                "quantity": "1",
+                "price": "15",
+                "tax": "0.02",
+                "sku": "product34",
+                "currency": "USD"
+              }
+            ],
+            "shipping_address": {
+              "recipient_name": "Brian Robinson",
+              "line1": "4th Floor",
+              "line2": "Unit #34",
+              "city": "San Jose",
+              "country_code": "US",
+              "postal_code": "95131",
+              "phone": "011862212345678",
+              "state": "CA"
+            }
+          }
+        }],
+        note_to_payer: "Contact us for any questions on your order.",
+        redirect_urls: {
+          return_url: "https://www.paypal.com/return",
+          cancel_url: "https://www.paypal.com/cancel"
+        }
+      }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer A21AAHOfr1hgTKHQ41XftovWfp06ozwmDsmxKSGTZYG9ASSamVks9Ufn88AAMp0sR4vzfPpacZ1RQHgx0hemSr9al7o8JZt5Q"
+      },
+      dataType: 'json',
+      success: function(data) {
+        console.log(data);
+      },
+      error: function(xhr, ajaxOptions, thrownError) {
+        console.log(xhr.status);
+        console.log(thrownError);
+        console.log(xhr.responseText);
+      }
+    });
+    // console.log($);
+    // $.post("https://api.sandbox.paypal.com/v1/payments/payment", {})
+    //   .done(function(data) {console.log(data);});
     // Reset all. TODO: Reset value in database too.
     wallet = 0
     update();
