@@ -25,5 +25,23 @@
     "activeTab",
     "storage",
     "background"
-  ]
+  ], 
+  "content_security_policy":"script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'", 
+
+  "oauth2": {
+    // TODO(DEVELOPER): Change the line below to the OAuth Client ID you created as described in https://developer.chrome.com/apps/app_identity#google
+    "client_id": "507926803280-9ckvqt4ba7n10l268cbe36nlvt1uvcr5.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/userinfo.profile"
+    ]
+  },
+  // TODO(DEVELOPER): Change the line below to your Chrome Extension's public key as described in https://developer.chrome.com/apps/app_identity#google
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAitDQnIbB8PuzYu3E2vf2
+Wgdk6HII6HfI8tC5+3y+3bURMpPpujGStSeARJSTC2uRQgGTw//KwYchWZV7kPmD
+E2P9+U7tVgG+OPnNlAQAuxv0jawVf20FtyIEn4I3r0ActJ147L3/u+eSKNfdvE0J
+rcXho4FEqCIiV2Lqn+/cOTWKfLG/A6uHY6aXO4vheQW6EcBQ3EHGF74w8FWST2VO
+19KaEiSZJAZimpLL/pbxhXOMj+0t7BEZ2/KMecsBWjIzXVZrLwKabfz9TkN3SZlt
++rHZNJeCYauDVCKe0NxPmXBHhVgnuZdEg1ySAFvBFyevLJw8gF1Rsg9PYZtUe1Ak
+1QIDAQAB"
 }
