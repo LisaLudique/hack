@@ -37,11 +37,13 @@
     ]
   },
   // TODO(DEVELOPER): Change the line below to your Chrome Extension's public key as described in https://developer.chrome.com/apps/app_identity#google
-  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAitDQnIbB8PuzYu3E2vf2
+  "key": "-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAitDQnIbB8PuzYu3E2vf2
 Wgdk6HII6HfI8tC5+3y+3bURMpPpujGStSeARJSTC2uRQgGTw//KwYchWZV7kPmD
 E2P9+U7tVgG+OPnNlAQAuxv0jawVf20FtyIEn4I3r0ActJ147L3/u+eSKNfdvE0J
 rcXho4FEqCIiV2Lqn+/cOTWKfLG/A6uHY6aXO4vheQW6EcBQ3EHGF74w8FWST2VO
 19KaEiSZJAZimpLL/pbxhXOMj+0t7BEZ2/KMecsBWjIzXVZrLwKabfz9TkN3SZlt
 +rHZNJeCYauDVCKe0NxPmXBHhVgnuZdEg1ySAFvBFyevLJw8gF1Rsg9PYZtUe1Ak
-1QIDAQAB"
+1QIDAQAB
+-----END PUBLIC KEY-----"
 }
