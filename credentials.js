@@ -370,13 +370,14 @@ window.onload = function() {
 
           // Reset all. TODO: Reset value in database too and add to history.
           // Maybe only accummulate total donations per month to avoid overflow?
-          wallet = await firebase.database().ref(currentUser.uid).child("amount").remove().then(function(snapshot) {
-        // The Promise was "fulfilled" (it succeeded).
-                return 0; 
-              }, function(error) {
-                // The Promise was rejected.
-                console.error(error);
-              });;
+        //   wallet = await firebase.database().ref(currentUser.uid).child("amount").remove().then(function(snapshot) {
+        // // The Promise was "fulfilled" (it succeeded).
+        //         return 0; 
+        //       }, function(error) {
+        //         // The Promise was rejected.
+        //         console.error(error);
+        //       });;
+          wallet = 0; 
           payment = 0;
           // update();
         };
