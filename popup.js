@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
     var header;
     var donation_id;
 
-    // TODO: Pass authentication needs (client id, secret key) from form to call.
+    // TODO: Pass authentication needs (client id, secret key) from form/database to call.
     $.ajax({
       url: 'https://api.sandbox.paypal.com/v1/oauth2/token',
       async: false,
@@ -177,6 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
       success: function(data) {
         console.log(data);
         donation_id = data.id;
+        document.getElementById("savings").innerHTML = "Your payment (ID: " + donation_id + ") has been created and can be approved through your PayPal account. Thanks for donating!";
       },
       error: function(xhr, ajaxOptions, thrownError) {
         console.log(xhr.status);
@@ -185,30 +186,31 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Get pending payment details.
-    $.ajax({
-      url: 'https://api.sandbox.paypal.com/v1/payments/payment/' + donation_id,
-      type: 'GET',
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: header
-      },
-      dataType: 'json',
-      success: function(data) {
-        console.log(data);
-      },
-      error: function(xhr, ajaxOptions, thrownError) {
-        console.log(xhr.status);
-        console.log(thrownError);
-        console.log(xhr.responseText);
-        console.log('https://api.sandbox.paypal.com/v1/payments/payment/' + donation_id);
-      }
-    });
+    // // Get pending payment details.
+    // $.ajax({
+    //   url: 'https://api.sandbox.paypal.com/v1/payments/payment/' + donation_id,
+    //   type: 'GET',
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     Authorization: header
+    //   },
+    //   dataType: 'json',
+    //   success: function(data) {
+    //     console.log(data);
+    //     document.getElementById("savings").innerHTML = "Your payment (ID: " + donation_id + ") has been created and can be approved through your PayPal account. Thanks for donating!";
+    //   },
+    //   error: function(xhr, ajaxOptions, thrownError) {
+    //     console.log(xhr.status);
+    //     console.log(thrownError);
+    //     console.log(xhr.responseText);
+    //     console.log('https://api.sandbox.paypal.com/v1/payments/payment/' + donation_id);
+    //   }
+    // });
 
     // Reset all. TODO: Reset value in database too and add to history.
     // Maybe only accummulate total donations per month to avoid overflow?
     wallet = 0;
     payment = 0;
-    update();
+    //update();
   }
 });
