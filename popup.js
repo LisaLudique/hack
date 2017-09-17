@@ -106,13 +106,13 @@ document.addEventListener('DOMContentLoaded', () => {
         message('User ID saved');
       });
       console.log('Signed Out');
+      document.getElementById("content").innerHTML = "<center>You've been signed out!</center>";
     }, function(error) {
       console.error('Sign Out Error', error);
     });
-
   }
   function printSomething() {
-    console.log("please work"); 
+    console.log("please work");
   }
   function updateSettings() {
     // Query here too.

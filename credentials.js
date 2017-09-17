@@ -42,7 +42,8 @@ function initApp() {
       var uid = user.uid;
       var providerData = user.providerData;
       // [START_EXCLUDE]
-      document.getElementById('quickstart-button').textContent = 'Sign out';
+      // document.getElementById('quickstart-button').textContent = 'Sign out';
+      window.location.href = "/popup.html";
       document.getElementById('quickstart-sign-in-status').textContent = 'Signed in';
       document.getElementById('quickstart-account-details').textContent = JSON.stringify(user, null, '  ');
       // [END_EXCLUDE]
