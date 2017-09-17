@@ -127,8 +127,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function pay() {
-    // TODO: Pass authentication needs (client id, secret key) from form to call.
     var access_token;
+    var header;
+    var donation_id;
+
+    // TODO: Pass authentication needs (client id, secret key) from form to call.
     $.ajax({
       url: 'https://api.sandbox.paypal.com/v1/oauth2/token',
       async: false,
@@ -156,6 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // TODO: Call payment API.
     $.ajax({
       url: 'https://api.sandbox.paypal.com/v1/payments/payment',
+      async: false,
       type: 'POST',
       data: JSON.stringify({
         intent: "sale",
@@ -205,11 +209,32 @@ document.addEventListener('DOMContentLoaded', () => {
       dataType: 'json',
       success: function(data) {
         console.log(data);
+        donation_id = data.id;
       },
       error: function(xhr, ajaxOptions, thrownError) {
         console.log(xhr.status);
         console.log(thrownError);
         console.log(xhr.responseText);
+      }
+    });
+
+    // Get pending payment details.
+    $.ajax({
+      url: 'https://api.sandbox.paypal.com/v1/payments/payment/' + donation_id,
+      type: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: header
+      },
+      dataType: 'json',
+      success: function(data) {
+        console.log(data);
+      },
+      error: function(xhr, ajaxOptions, thrownError) {
+        console.log(xhr.status);
+        console.log(thrownError);
+        console.log(xhr.responseText);
+        console.log('https://api.sandbox.paypal.com/v1/payments/payment/' + donation_id);
       }
     });
 
