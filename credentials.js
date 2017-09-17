@@ -177,7 +177,7 @@ window.onload = function() {
     // testing purposes here only
 
     // TODO(ydich): Set var: wallet to database query.
-    var total = await firebase.database().ref(currentUser.uid).child("total").once("value").then(function(snapshot) {
+    var history = await firebase.database().ref(currentUser.uid).child("history").once("value").then(function(snapshot) {
       // The Promise was "fulfilled" (it succeeded).
       return snapshot.val();
     }, function(error) {
@@ -199,6 +199,7 @@ window.onload = function() {
     // TODO(ydich): Query clientID, secret, charity.
     var clientId;
     var secret;
+    var history;
     update();
 
     function update() {
@@ -219,7 +220,7 @@ window.onload = function() {
       document.getElementById("updateButton").addEventListener("click", updateSettings);
       document.getElementById("donateButton").addEventListener("click", pay);
       document.getElementById("signOut").addEventListener("click", signOut);
-      document.getElementById("stat").innerHTML = total;
+      document.getElementById("stat").innerHTML = history;
       document.getElementById("charity").innerHTML = charity;
     }
 
@@ -354,42 +355,41 @@ window.onload = function() {
         }
       });
 
-
-          // // Get pending payment details.
-          // $.ajax({
-          //   url: 'https://api.sandbox.paypal.com/v1/payments/payment/' +
-          //   donation_id, type: 'GET', headers: {
-          //     "Content-Type": "application/json",
-          //     Authorization: header
-          //   },
-          //   dataType: 'json',
-          //   success: function(data) {
-          //     console.log(data);
-          //     document.getElementById("savings").innerHTML = "Your payment
-          //     (ID: " + donation_id + ") has been created and can be approved
-          //     through your PayPal account. Thanks for donating!";
-          //   },
-          //   error: function(xhr, ajaxOptions, thrownError) {
-          //     console.log(xhr.status);
-          //     console.log(thrownError);
-          //     console.log(xhr.responseText);
-          //     console.log('https://api.sandbox.paypal.com/v1/payments/payment/'
-          //     + donation_id);
-          //   }
-          // });
-
           // Reset all. TODO: Reset value in database too and add to history.
           // Maybe only accummulate total donations per month to avoid overflow?
         //   wallet = await firebase.database().ref(currentUser.uid).child("amount").remove().then(function(snapshot) {
         // // The Promise was "fulfilled" (it succeeded).
-        //         return 0; 
+        //         return 0;
         //       }, function(error) {
         //         // The Promise was rejected.
         //         console.error(error);
         //       });;
-          wallet = 0; 
+        if (currentUser) {
+          var cur = firebase.database()
+            .ref(currentUser.uid)
+            .child('history')
+            .once('value');
+          cur.then(function(snapshot) {
+              var snap = snapshot.val();
+              if (isNaN(parseFloat(snap, 10))) {
+                return 0;
+              }
+              return snap;
+            })
+            .then(function(value) {
+              return firebase.database()
+                .ref(currentUser.uid)
+                .child('history')
+                .set(value + payment);
+            });
+        }
+          wallet = 0;
+          firebase.database()
+            .ref(currentUser.uid)
+            .child('amount')
+            .set(0);
           payment = 0;
-          // update();
+          update();
         };
       })
 };
