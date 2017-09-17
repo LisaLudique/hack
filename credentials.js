@@ -156,10 +156,18 @@ function getCurrentTabUrl(callback) {
 
 
 window.onload = function() {
-  initApp().then(() => {
+  initApp().then(async () => {
 
     // TODO(ydich): Set var: wallet to database query.
-    var wallet = 2 // testing purposes here only
+    var wallet = await firebase.database().ref(currentUser.uid).child("amount").once("value").then(function(snapshot) {
+  // The Promise was "fulfilled" (it succeeded).
+          return snapshot.val();
+        }, function(error) {
+          // The Promise was rejected.
+          console.error(error);
+        });
+ // testing purposes here only
+    
     var payment;
     var access_token;
     // TODO(ydich): Query clientID, secret, charity.
@@ -198,9 +206,7 @@ window.onload = function() {
         console.error('Sign Out Error', error);
       });
     }
-    function printSomething() {
-      console.log("please work");
-    }
+
     function updateSettings() {
       // Query here too.
       clientId = $('#clientid').val();
