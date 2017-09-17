@@ -12,5 +12,3 @@ PayPal API. The rest of the extension was built with HTML, CSS, JavaScript,
 jQuery, and AJAX.
 
 This was built by Yong Li Dich, Miles Fertel, and Lisa Lu for HackMIT 2017.
-
-![](https://github.com/LisaLudique/hack/blob/master/screenshot.png =250x)
