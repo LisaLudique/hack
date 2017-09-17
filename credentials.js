@@ -67,7 +67,7 @@ function initApp() {
         // [END_EXCLUDE]
       }
       document.getElementById('quickstart-button')
-          .addEventListener('click', startSignIn, false);
+        .addEventListener('click', startSignIn, false);
       resolve();
     });
     // [END authstatelistener]
@@ -80,7 +80,9 @@ function initApp() {
  */
 function startAuth(interactive) {
   // Request an OAuth token from the Chrome Identity API.
-  chrome.identity.getAuthToken({interactive: !!interactive}, function(token) {
+  chrome.identity.getAuthToken({
+    interactive: !!interactive
+  }, function(token) {
     if (chrome.runtime.lastError && !interactive) {
       console.log('It was not possible to get a token programmatically.');
     } else if (chrome.runtime.lastError) {
@@ -92,7 +94,9 @@ function startAuth(interactive) {
         // The OAuth token might have been invalidated. Lets' remove it from
         // cache.
         if (error.code === 'auth/invalid-credential') {
-          chrome.identity.removeCachedAuthToken({token: token}, function() {
+          chrome.identity.removeCachedAuthToken({
+            token: token
+          }, function() {
             startAuth(interactive);
           });
         }
@@ -122,7 +126,10 @@ function startSignIn() {
 function getCurrentTabUrl(callback) {
   // Query filter to be passed to chrome.tabs.query - see
   // https://developer.chrome.com/extensions/tabs#method-query
-  var queryInfo = {active: true, currentWindow: true};
+  var queryInfo = {
+    active: true,
+    currentWindow: true
+  };
 
   chrome.tabs.query(queryInfo, (tabs) => {
     // chrome.tabs.query invokes the callback with a list of tabs that match the
@@ -157,18 +164,27 @@ function getCurrentTabUrl(callback) {
 
 
 window.onload = function() {
-  initApp().then(async () => {
+  initApp().then(async() => {
 
     // TODO(ydich): Set var: wallet to database query.
     var wallet = await firebase.database().ref(currentUser.uid).child("amount").once("value").then(function(snapshot) {
-  // The Promise was "fulfilled" (it succeeded).
-          return snapshot.val();
-        }, function(error) {
-          // The Promise was rejected.
-          console.error(error);
-        });
- // testing purposes here only
-    
+      // The Promise was "fulfilled" (it succeeded).
+      return snapshot.val();
+    }, function(error) {
+      // The Promise was rejected.
+      console.error(error);
+    });
+    // testing purposes here only
+
+    // TODO(ydich): Set var: wallet to database query.
+    var total = await firebase.database().ref(currentUser.uid).child("total").once("value").then(function(snapshot) {
+      // The Promise was "fulfilled" (it succeeded).
+      return snapshot.val();
+    }, function(error) {
+      // The Promise was rejected.
+      console.error(error);
+    });
+
     var payment;
     var access_token;
     // TODO(ydich): Query clientID, secret, charity.
@@ -195,119 +211,139 @@ window.onload = function() {
       document.getElementById("updateButton").addEventListener("click", updateSettings);
       document.getElementById("donateButton").addEventListener("click", pay);
       document.getElementById("signOut").addEventListener("click", signOut);
-
+      document.getElementById("stat").innerHTML = total;
     }
 
-    function signOut(){
+    function signOut() {
       firebase.auth().signOut().then(function() {
-        currentUser = null;
-        viewSwitcher('signed-out-content');
-      })
-      .catch(function(error) {
-        console.error('Sign Out Error', error);
-      });
+          currentUser = null;
+          viewSwitcher('signed-out-content');
+        })
+        .catch(function(error) {
+          console.error('Sign Out Error', error);
+        });
     }
 
 
-        function updateSettings() {
-          // Query here too.
-          clientId = $('#clientid').val();
-          console.log(clientId);
-          secret = $('#secret').val();
-          console.log(secret);
-          charity = $('#charity').val();
-          console.log(charity);
+    function updateSettings() {
+      // Query here too.
+      clientId = $('#clientid').val();
+      console.log(clientId);
+      secret = $('#secret').val();
+      console.log(secret);
+      charity = $('#charity').val();
+      console.log(charity);
+      firebase.database()
+        .ref(currentUser.uid)
+        .child('clientId')
+        .set(clientId);
+        firebase.database()
+          .ref(currentUser.uid)
+          .child('secret')
+          .set(secret);
+      firebase.database()
+        .ref(currentUser.uid)
+        .child('charity')
+        .set(charity);
+    }
+
+    function pay() {
+      var access_token;
+      var header;
+      var donation_id;
+
+      // TODO: Pass authentication needs (client id, secret key) from
+      // form/database to call.
+      $.ajax({
+        url: 'https://api.sandbox.paypal.com/v1/oauth2/token',
+        async: false,
+        type: 'POST',
+        data: 'grant_type=client_credentials',
+        headers: {
+          'Accept-Language': 'en_US',
+          'Accept': 'application/json',
+          Authorization: 'Basic ' +
+            btoa(
+              'AemE0f6yNJ_xqCkWQ4SqYqrd799WNpvnFBFSna9vnglagxms0of4frC8E5MAL5uJPsYD8sLJHVChVzAb:EAnNySUm_KDfDDEuqA9IX8zLYrJS3ybP39md8ZNnE2L5DBLAxjCS8GEZ2WujANS2i04pvvoqihN_kRhS')
+        },
+        dataType: 'json',
+        success: function(data) {
+          console.log(data.access_token);
+          access_token = data.access_token;
+          console.log(access_token);
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+          console.log(xhr.status);
+          console.log(thrownError);
+          console.log(xhr.responseText);
         }
+      });
+      header = 'Bearer ' + access_token;
 
-        function pay() {
-          var access_token;
-          var header;
-          var donation_id;
-
-          // TODO: Pass authentication needs (client id, secret key) from
-          // form/database to call.
-          $.ajax({
-            url: 'https://api.sandbox.paypal.com/v1/oauth2/token',
-            async: false,
-            type: 'POST',
-            data: 'grant_type=client_credentials',
-            headers: {
-              'Accept-Language': 'en_US',
-              'Accept': 'application/json',
-              Authorization:
-                  'Basic ' +
-                  btoa(
-                      'AemE0f6yNJ_xqCkWQ4SqYqrd799WNpvnFBFSna9vnglagxms0of4frC8E5MAL5uJPsYD8sLJHVChVzAb:EAnNySUm_KDfDDEuqA9IX8zLYrJS3ybP39md8ZNnE2L5DBLAxjCS8GEZ2WujANS2i04pvvoqihN_kRhS')
+      // TODO: Call payment API.
+      $.ajax({
+        url: 'https://api.sandbox.paypal.com/v1/payments/payment',
+        async: false,
+        type: 'POST',
+        data: JSON.stringify({
+          intent: 'sale',
+          payer: {
+            payment_method: 'paypal'
+          },
+          transactions: [{
+            'amount': {
+              'total': payment.toString(),
+              'currency': 'USD'
             },
-            dataType: 'json',
-            success: function(data) {
-              console.log(data.access_token);
-              access_token = data.access_token;
-              console.log(access_token);
+            'description': 'Heart of Gold charity donation.',
+            'payment_options': {
+              'allowed_payment_method': 'INSTANT_FUNDING_SOURCE'
             },
-            error: function(xhr, ajaxOptions, thrownError) {
-              console.log(xhr.status);
-              console.log(thrownError);
-              console.log(xhr.responseText);
-            }
-          });
-          header = 'Bearer ' + access_token;
-
-          // TODO: Call payment API.
-          $.ajax({
-            url: 'https://api.sandbox.paypal.com/v1/payments/payment',
-            async: false,
-            type: 'POST',
-            data: JSON.stringify({
-              intent: 'sale',
-              payer: {payment_method: 'paypal'},
-              transactions: [{
-                'amount': {'total': payment.toString(), 'currency': 'USD'},
-                'description': 'Heart of Gold charity donation.',
-                'payment_options':
-                    {'allowed_payment_method': 'INSTANT_FUNDING_SOURCE'},
-                'item_list': {
-                  'items': [{
-                    'name': 'donation',
-                    'description': 'Donation to charity',
-                    'quantity': '1',
-                    'price': payment.toString(),
-                    'currency': 'USD'
-                  }],
-                  'shipping_address': {
-                    'recipient_name': 'Brian Robinson',
-                    'line1': '4th Floor',
-                    'line2': 'Unit #34',
-                    'city': 'San Jose',
-                    'country_code': 'US',
-                    'postal_code': '95131',
-                    'phone': '011862212345678',
-                    'state': 'CA'
-                  }
-                }
+            'item_list': {
+              'items': [{
+                'name': 'donation',
+                'description': 'Donation to charity',
+                'quantity': '1',
+                'price': payment.toString(),
+                'currency': 'USD'
               }],
-              note_to_payer: 'Contact us for any questions on your order.',
-              redirect_urls: {
-                return_url: 'https://www.paypal.com/return',
-                cancel_url: 'https://www.paypal.com/cancel'
+              'shipping_address': {
+                'recipient_name': 'Brian Robinson',
+                'line1': '4th Floor',
+                'line2': 'Unit #34',
+                'city': 'San Jose',
+                'country_code': 'US',
+                'postal_code': '95131',
+                'phone': '011862212345678',
+                'state': 'CA'
               }
-            }),
-            headers:
-                {'Content-Type': 'application/json', Authorization: header},
-            dataType: 'json',
-            success: function(data) {
-              console.log(data);
-              donation_id = data.id;
-              document.getElementById('savings').innerHTML =
-                  'Your payment (ID: ' + donation_id +
-                  ') has been created and can be approved through your PayPal account. Thanks for donating!';
-            },
-            error: function(xhr, ajaxOptions, thrownError) {
-              console.log(xhr.status);
-              console.log(thrownError);
-              console.log(xhr.responseText);
             }
-          });
+          }],
+          note_to_payer: 'Contact us for any questions on your order.',
+          redirect_urls: {
+            return_url: 'https://www.paypal.com/return',
+            cancel_url: 'https://www.paypal.com/cancel'
+          }
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: header
+        },
+        dataType: 'json',
+        success: function(data) {
+          console.log(data);
+          donation_id = data.id;
+          document.getElementById('savings').innerHTML =
+            'Your payment (ID: ' + donation_id +
+            ') has been created and can be approved through your PayPal account. Thanks for donating!';
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+          console.log(xhr.status);
+          console.log(thrownError);
+          console.log(xhr.responseText);
+        }
+      });
+
 
           // // Get pending payment details.
           // $.ajax({
@@ -363,28 +399,28 @@ function getRoundUp(total) {
 };
 
 function addMoney(roundUp) {
-    if (currentUser) {
-      var cur = firebase.database()
-                    .ref(currentUser.uid)
-                    .child('amount')
-                    .once('value');
-      cur.then(function(snapshot) {
-           var snap = snapshot.val();
-           if (isNaN(parseFloat(snap, 10))) {
-             return 0;
-           }
-           return snap;
-         })
-          .then(function(value) {
-            return firebase.database()
-                .ref(currentUser.uid)
-                .child('amount')
-                .set(value + roundUp);
-          });
-    }
+  if (currentUser) {
+    var cur = firebase.database()
+      .ref(currentUser.uid)
+      .child('amount')
+      .once('value');
+    cur.then(function(snapshot) {
+        var snap = snapshot.val();
+        if (isNaN(parseFloat(snap, 10))) {
+          return 0;
+        }
+        return snap;
+      })
+      .then(function(value) {
+        return firebase.database()
+          .ref(currentUser.uid)
+          .child('amount')
+          .set(value + roundUp);
+      });
+  }
 }
 
-chrome.runtime.onMessage.addListener(function (msg, sender) {
+chrome.runtime.onMessage.addListener(function(msg, sender) {
   // First, validate the message's structure
   if ((msg.from === 'content') && (msg.subject === 'float')) {
     // Enable the page-action for the requesting tab
