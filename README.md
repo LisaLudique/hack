@@ -13,4 +13,4 @@ jQuery, and AJAX.
 
 This was built by Yong Li Dich, Miles Fertel, and Lisa Lu for HackMIT 2017.
 
-![alt text](https://github.com/LisaLudique/hack/blob/master/screenshot.png | width=300)
+![](https://github.com/LisaLudique/hack/blob/master/screenshot.png =250x)
