@@ -68,7 +68,7 @@ function getCurrentTabUrl(callback) {
 // user devices.
 document.addEventListener('DOMContentLoaded', () => {
   // TODO(ydich): Set var: wallet to database query.
-  var wallet = 20 // testing purposes here only
+  var wallet = 2 // testing purposes here only
   var payment;
   var access_token;
   // TODO(ydich): Query clientID, secret, charity.
@@ -82,7 +82,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById("wallet").innerHTML = "$" + wallet;
     if (wallet < 5) {
       var remainder = 5 - wallet;
-      document.getElementById("remainder").innerHTML = "<b>$" + remainder + "</b> until $5.";
+      document.getElementById("before").innerHTML = "That's ";
+      document.getElementById("remainder").innerHTML = "<b>$" + remainder + "</b>";
+      document.getElementById("until").innerHTML = " until $5!"
       document.getElementById("donateButton").innerHTML = "Round up to $5 and donate now!"
       payment = 5
     } else {
