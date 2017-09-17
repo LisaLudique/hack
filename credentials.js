@@ -354,14 +354,44 @@ window.onload = function() {
         }
       });
 
-      // Reset all. TODO: Reset value in database too and add to history.
-      // Maybe only accummulate total donations per month to avoid overflow?
-      wallet = 0;
-      payment = 0;
-      // update();
 
-    };
-  })
+          // // Get pending payment details.
+          // $.ajax({
+          //   url: 'https://api.sandbox.paypal.com/v1/payments/payment/' +
+          //   donation_id, type: 'GET', headers: {
+          //     "Content-Type": "application/json",
+          //     Authorization: header
+          //   },
+          //   dataType: 'json',
+          //   success: function(data) {
+          //     console.log(data);
+          //     document.getElementById("savings").innerHTML = "Your payment
+          //     (ID: " + donation_id + ") has been created and can be approved
+          //     through your PayPal account. Thanks for donating!";
+          //   },
+          //   error: function(xhr, ajaxOptions, thrownError) {
+          //     console.log(xhr.status);
+          //     console.log(thrownError);
+          //     console.log(xhr.responseText);
+          //     console.log('https://api.sandbox.paypal.com/v1/payments/payment/'
+          //     + donation_id);
+          //   }
+          // });
+
+          // Reset all. TODO: Reset value in database too and add to history.
+          // Maybe only accummulate total donations per month to avoid overflow?
+        //   wallet = await firebase.database().ref(currentUser.uid).child("amount").remove().then(function(snapshot) {
+        // // The Promise was "fulfilled" (it succeeded).
+        //         return 0; 
+        //       }, function(error) {
+        //         // The Promise was rejected.
+        //         console.error(error);
+        //       });;
+          wallet = 0; 
+          payment = 0;
+          // update();
+        };
+      })
 };
 // Returns negative number if not a transaction page. Otherwise gets
 // price.
