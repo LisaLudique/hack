@@ -10,10 +10,9 @@
     "default_icon": "icon.png",
     "default_popup": "credentials.html"
   },
-  "background": {
-    //"page": "background.html",
-    "scripts": ["firebase.js", "background.js"]
-  },
+  //"background": {
+  //  "scripts": ["firebase.js", "background.js"]
+  //},
   "content_scripts": [{
     "matches": ["https://www.amazon.com/*"],
     "js": [

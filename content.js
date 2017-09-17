@@ -29,23 +29,15 @@ function checkPage() {
   if (price > 0) {
     found = true;
     var roundUp = getRoundUp(price);
-    if (confirm("You can round up and donate " + roundUp.toString() + ". Press OK to add to your donation wallet, or cancel to exit.")) {
-      // TODO: Generate ID
-      chrome.storage.sync.get("userId",
-        function (ID) {
-          if (!ID) {
-            var cur = firebase.database().ref(ID).child("amount").once("value");
-            cur.then(function(snapshot) {
-              var snap = snapshot.val();
-              if (isNaN(snap)) {
-                return 0;
-              }
-              return snap;
-            }).then(function(value) {
-              firebase.database().ref(ID).child("amount").set(value + roundUp);
-            })
-          }
-        });
+    if (confirm(
+            'You can round up and donate ' + roundUp.toString() +
+            '. Press OK to add to your donation wallet, or cancel to exit.')) {
+      //send message
+      chrome.runtime.sendMessage({
+        from:    'content',
+        subject: 'float',
+        body: roundUp
+      });
     }
   }
 }

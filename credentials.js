@@ -1,14 +1,15 @@
-// TODO(DEVELOPER): Change the values below using values from the initialization snippet: Firebase Console > Overview > Add Firebase to your web app.
+// TODO(DEVELOPER): Change the values below using values from the initialization
+// snippet: Firebase Console > Overview > Add Firebase to your web app.
 // Initialize Firebase
 
 // Initialize Firebase
 var config = {
-  apiKey: "AIzaSyCEVBQEHtw6q0VZV8-G0jbOTfAuresxXmI",
-  authDomain: "heartofgold-2496d.firebaseapp.com",
-  databaseURL: "https://heartofgold-2496d.firebaseio.com",
-  projectId: "heartofgold-2496d",
-  storageBucket: "heartofgold-2496d.appspot.com",
-  messagingSenderId: "536324270949"
+  apiKey: 'AIzaSyCEVBQEHtw6q0VZV8-G0jbOTfAuresxXmI',
+  authDomain: 'heartofgold-2496d.firebaseapp.com',
+  databaseURL: 'https://heartofgold-2496d.firebaseio.com',
+  projectId: 'heartofgold-2496d',
+  storageBucket: 'heartofgold-2496d.appspot.com',
+  messagingSenderId: '536324270949'
 };
 firebase.initializeApp(config);
 
@@ -33,17 +34,16 @@ function viewSwitcher(id) {
  * which stores configuration. We provide an app name here to allow
  * distinguishing multiple app instances.
  *
- * This method also registers a listener with firebase.auth().onAuthStateChanged.
- * This listener is called when the user is signed in or out, and that
- * is where we update the UI.
+ * This method also registers a listener with
+ * firebase.auth().onAuthStateChanged. This listener is called when the user is
+ * signed in or out, and that is where we update the UI.
  *
  * When signed in, we also authenticate to the Firebase Realtime Database.
  */
- function initApp() {
+function initApp() {
   return new Promise((resolve, reject) => {
     // Listen for auth state changes.
     // [START authstatelistener]
-    console.log("initAPP");
     firebase.auth().onAuthStateChanged(function(user) {
       if (user) {
         currentUser = user;
@@ -56,15 +56,18 @@ function viewSwitcher(id) {
         var uid = user.uid;
         var providerData = user.providerData;
         // [START_EXCLUDE]
-        // document.getElementById('quickstart-button').textContent = 'Sign out';
+        // document.getElementById('quickstart-button').textContent = 'Sign
+        // out';
         viewSwitcher('signed-in-content')
       } else {
         // Let's try to get a Google auth token programmatically.
         // [START_EXCLUDE]
-        document.getElementById('quickstart-button').textContent = 'Sign-in with Google';
+        // document.getElementById('quickstart-button').textContent =
+        //    'Sign-in with Google';
         // [END_EXCLUDE]
       }
-      document.getElementById('quickstart-button').addEventListener('click', startSignIn, false);
+      document.getElementById('quickstart-button')
+          .addEventListener('click', startSignIn, false);
       resolve();
     });
     // [END authstatelistener]
@@ -75,18 +78,19 @@ function viewSwitcher(id) {
  * Start the auth flow and authorizes to Firebase.
  * @param{boolean} interactive True if the OAuth flow should request with an interactive mode.
  */
- function startAuth(interactive) {
+function startAuth(interactive) {
   // Request an OAuth token from the Chrome Identity API.
   chrome.identity.getAuthToken({interactive: !!interactive}, function(token) {
     if (chrome.runtime.lastError && !interactive) {
       console.log('It was not possible to get a token programmatically.');
-    } else if(chrome.runtime.lastError) {
+    } else if (chrome.runtime.lastError) {
       console.error(chrome.runtime.lastError);
     } else if (token) {
       // Authrorize Firebase with the OAuth Access Token.
       var credential = firebase.auth.GoogleAuthProvider.credential(null, token);
       firebase.auth().signInWithCredential(credential).catch(function(error) {
-        // The OAuth token might have been invalidated. Lets' remove it from cache.
+        // The OAuth token might have been invalidated. Lets' remove it from
+        // cache.
         if (error.code === 'auth/invalid-credential') {
           chrome.identity.removeCachedAuthToken({token: token}, function() {
             startAuth(interactive);
@@ -102,8 +106,8 @@ function viewSwitcher(id) {
 /**
  * Starts the sign-in process.
  */
- function startSignIn() {
-  console.log("startSignIn");
+function startSignIn() {
+  console.log('startSignIn');
   document.getElementById('quickstart-button').disabled = true;
   if (firebase.auth().currentUser) {
     firebase.auth().signOut().then(() => {
@@ -118,10 +122,7 @@ function viewSwitcher(id) {
 function getCurrentTabUrl(callback) {
   // Query filter to be passed to chrome.tabs.query - see
   // https://developer.chrome.com/extensions/tabs#method-query
-  var queryInfo = {
-    active: true,
-    currentWindow: true
-  };
+  var queryInfo = {active: true, currentWindow: true};
 
   chrome.tabs.query(queryInfo, (tabs) => {
     // chrome.tabs.query invokes the callback with a list of tabs that match the
@@ -207,144 +208,145 @@ window.onload = function() {
       });
     }
 
-    function updateSettings() {
-      // Query here too.
-      clientId = $('#clientid').val();
-      console.log(clientId);
-      secret = $('#secret').val();
-      console.log(secret);
-      charity = $('#charity').val();
-      console.log(charity);
-    }
 
-    function pay() {
-      var access_token;
-      var header;
-      var donation_id;
-
-      // TODO: Pass authentication needs (client id, secret key) from form/database to call.
-      $.ajax({
-        url: 'https://api.sandbox.paypal.com/v1/oauth2/token',
-        async: false,
-        type: 'POST',
-        data: 'grant_type=client_credentials',
-        headers: {
-          "Accept-Language": "en_US",
-          "Accept": "application/json",
-          Authorization: "Basic " + btoa("AemE0f6yNJ_xqCkWQ4SqYqrd799WNpvnFBFSna9vnglagxms0of4frC8E5MAL5uJPsYD8sLJHVChVzAb:EAnNySUm_KDfDDEuqA9IX8zLYrJS3ybP39md8ZNnE2L5DBLAxjCS8GEZ2WujANS2i04pvvoqihN_kRhS")
-        },
-        dataType: 'json',
-        success: function(data) {
-          console.log(data.access_token);
-          access_token = data.access_token;
-          console.log(access_token);
-        },
-        error: function(xhr, ajaxOptions, thrownError) {
-          console.log(xhr.status);
-          console.log(thrownError);
-          console.log(xhr.responseText);
+        function updateSettings() {
+          // Query here too.
+          clientId = $('#clientid').val();
+          console.log(clientId);
+          secret = $('#secret').val();
+          console.log(secret);
+          charity = $('#charity').val();
+          console.log(charity);
         }
-      });
-      header = "Bearer " + access_token;
 
-      // TODO: Call payment API.
-      $.ajax({
-        url: 'https://api.sandbox.paypal.com/v1/payments/payment',
-        async: false,
-        type: 'POST',
-        data: JSON.stringify({
-          intent: "sale",
-          payer: {
-            payment_method: "paypal"
-          },
-          transactions: [{
-            "amount": {
-              "total": payment.toString(),
-              "currency": "USD"
+        function pay() {
+          var access_token;
+          var header;
+          var donation_id;
+
+          // TODO: Pass authentication needs (client id, secret key) from
+          // form/database to call.
+          $.ajax({
+            url: 'https://api.sandbox.paypal.com/v1/oauth2/token',
+            async: false,
+            type: 'POST',
+            data: 'grant_type=client_credentials',
+            headers: {
+              'Accept-Language': 'en_US',
+              'Accept': 'application/json',
+              Authorization:
+                  'Basic ' +
+                  btoa(
+                      'AemE0f6yNJ_xqCkWQ4SqYqrd799WNpvnFBFSna9vnglagxms0of4frC8E5MAL5uJPsYD8sLJHVChVzAb:EAnNySUm_KDfDDEuqA9IX8zLYrJS3ybP39md8ZNnE2L5DBLAxjCS8GEZ2WujANS2i04pvvoqihN_kRhS')
             },
-            "description": "Heart of Gold charity donation.",
-            "payment_options": {
-              "allowed_payment_method": "INSTANT_FUNDING_SOURCE"
+            dataType: 'json',
+            success: function(data) {
+              console.log(data.access_token);
+              access_token = data.access_token;
+              console.log(access_token);
             },
-            "item_list": {
-              "items": [{
-                "name": "donation",
-                "description": "Donation to charity",
-                "quantity": "1",
-                "price": payment.toString(),
-                "currency": "USD"
-              }
-              ],
-              "shipping_address": {
-                "recipient_name": "Brian Robinson",
-                "line1": "4th Floor",
-                "line2": "Unit #34",
-                "city": "San Jose",
-                "country_code": "US",
-                "postal_code": "95131",
-                "phone": "011862212345678",
-                "state": "CA"
-              }
+            error: function(xhr, ajaxOptions, thrownError) {
+              console.log(xhr.status);
+              console.log(thrownError);
+              console.log(xhr.responseText);
             }
-          }],
-          note_to_payer: "Contact us for any questions on your order.",
-          redirect_urls: {
-            return_url: "https://www.paypal.com/return",
-            cancel_url: "https://www.paypal.com/cancel"
-          }
-        }),
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: header
-        },
-        dataType: 'json',
-        success: function(data) {
-          console.log(data);
-          donation_id = data.id;
-          document.getElementById("savings").innerHTML = "Your payment (ID: " + donation_id + ") has been created and can be approved through your PayPal account. Thanks for donating!";
-        },
-        error: function(xhr, ajaxOptions, thrownError) {
-          console.log(xhr.status);
-          console.log(thrownError);
-          console.log(xhr.responseText);
-        }
-      });
+          });
+          header = 'Bearer ' + access_token;
 
-      // // Get pending payment details.
-      // $.ajax({
-      //   url: 'https://api.sandbox.paypal.com/v1/payments/payment/' + donation_id,
-      //   type: 'GET',
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     Authorization: header
-      //   },
-      //   dataType: 'json',
-      //   success: function(data) {
-      //     console.log(data);
-      //     document.getElementById("savings").innerHTML = "Your payment (ID: " + donation_id + ") has been created and can be approved through your PayPal account. Thanks for donating!";
-      //   },
-      //   error: function(xhr, ajaxOptions, thrownError) {
-      //     console.log(xhr.status);
-      //     console.log(thrownError);
-      //     console.log(xhr.responseText);
-      //     console.log('https://api.sandbox.paypal.com/v1/payments/payment/' + donation_id);
-      //   }
-      // });
+          // TODO: Call payment API.
+          $.ajax({
+            url: 'https://api.sandbox.paypal.com/v1/payments/payment',
+            async: false,
+            type: 'POST',
+            data: JSON.stringify({
+              intent: 'sale',
+              payer: {payment_method: 'paypal'},
+              transactions: [{
+                'amount': {'total': payment.toString(), 'currency': 'USD'},
+                'description': 'Heart of Gold charity donation.',
+                'payment_options':
+                    {'allowed_payment_method': 'INSTANT_FUNDING_SOURCE'},
+                'item_list': {
+                  'items': [{
+                    'name': 'donation',
+                    'description': 'Donation to charity',
+                    'quantity': '1',
+                    'price': payment.toString(),
+                    'currency': 'USD'
+                  }],
+                  'shipping_address': {
+                    'recipient_name': 'Brian Robinson',
+                    'line1': '4th Floor',
+                    'line2': 'Unit #34',
+                    'city': 'San Jose',
+                    'country_code': 'US',
+                    'postal_code': '95131',
+                    'phone': '011862212345678',
+                    'state': 'CA'
+                  }
+                }
+              }],
+              note_to_payer: 'Contact us for any questions on your order.',
+              redirect_urls: {
+                return_url: 'https://www.paypal.com/return',
+                cancel_url: 'https://www.paypal.com/cancel'
+              }
+            }),
+            headers:
+                {'Content-Type': 'application/json', Authorization: header},
+            dataType: 'json',
+            success: function(data) {
+              console.log(data);
+              donation_id = data.id;
+              document.getElementById('savings').innerHTML =
+                  'Your payment (ID: ' + donation_id +
+                  ') has been created and can be approved through your PayPal account. Thanks for donating!';
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+              console.log(xhr.status);
+              console.log(thrownError);
+              console.log(xhr.responseText);
+            }
+          });
 
-      // Reset all. TODO: Reset value in database too and add to history.
-      // Maybe only accummulate total donations per month to avoid overflow?
-      wallet = 0;
-      payment = 0;
-      //update();
-    };
-  })
-.then(() => {
-// Returns negative number if not a transaction page. Otherwise gets price.
+          // // Get pending payment details.
+          // $.ajax({
+          //   url: 'https://api.sandbox.paypal.com/v1/payments/payment/' +
+          //   donation_id, type: 'GET', headers: {
+          //     "Content-Type": "application/json",
+          //     Authorization: header
+          //   },
+          //   dataType: 'json',
+          //   success: function(data) {
+          //     console.log(data);
+          //     document.getElementById("savings").innerHTML = "Your payment
+          //     (ID: " + donation_id + ") has been created and can be approved
+          //     through your PayPal account. Thanks for donating!";
+          //   },
+          //   error: function(xhr, ajaxOptions, thrownError) {
+          //     console.log(xhr.status);
+          //     console.log(thrownError);
+          //     console.log(xhr.responseText);
+          //     console.log('https://api.sandbox.paypal.com/v1/payments/payment/'
+          //     + donation_id);
+          //   }
+          // });
+
+          // Reset all. TODO: Reset value in database too and add to history.
+          // Maybe only accummulate total donations per month to avoid overflow?
+          wallet = 0;
+          payment = 0;
+          // update();
+        };
+      })
+};
+// Returns negative number if not a transaction page. Otherwise gets
+// price.
 function getPrice() {
-  var elts = document.getElementsByClassName("grand-total-price");
+  var elts = document.getElementsByClassName('grand-total-price');
   if (elts.length) {
     var total = elts[0].innerHTML;
-    total = Number(total.replace(/[^0-9\.-]+/g,""));
+    total = Number(total.replace(/[^0-9\.-]+/g, ''));
     return parseFloat(total);
   }
   return -1;
@@ -354,38 +356,36 @@ function getRoundUp(total) {
   return parseFloat((Math.ceil(total) - total).toFixed(2));
 };
 
-function checkPage() {
-  var price = getPrice();
-  if (price > 0) {
-    found = true;
-    var roundUp = getRoundUp(price);
-    if (confirm("You can round up and donate " + roundUp.toString() + ". Press OK to add to your donation wallet, or cancel to exit.")) {
-    // TODO: Generate ID
+function addMoney(roundUp) {
     if (currentUser) {
-      var cur = firebase.database().ref(currentUser.uid).child("amount").once("value");
+      var cur = firebase.database()
+                    .ref(currentUser.uid)
+                    .child('amount')
+                    .once('value');
       cur.then(function(snapshot) {
-        var snap = snapshot.val();
-        if (isNaN(parseFloat(snap, 10))) {
-          return 0;
-        }
-        return snap;
-      }).then(function(value) {
-        return firebase.database().ref(currentUser.uid).child("amount").set(value + roundUp);
-      });
+           var snap = snapshot.val();
+           if (isNaN(parseFloat(snap, 10))) {
+             return 0;
+           }
+           return snap;
+         })
+          .then(function(value) {
+            return firebase.database()
+                .ref(currentUser.uid)
+                .child('amount')
+                .set(value + roundUp);
+          });
     }
-  }
-}
 }
 
-var found = false;
-checkPage();
-document.addEventListener("DOMSubtreeModified", function(event){
-  if (!found) {
-    checkPage();
+chrome.runtime.onMessage.addListener(function (msg, sender) {
+  // First, validate the message's structure
+  if ((msg.from === 'content') && (msg.subject === 'float')) {
+    // Enable the page-action for the requesting tab
+    addMoney(msg.body);
   }
 });
-});
-};
+
 
 
 // This extension loads the saved background color for the current tab if one
