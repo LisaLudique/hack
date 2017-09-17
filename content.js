@@ -31,7 +31,7 @@ function checkPage() {
     var roundUp = getRoundUp(price);
     if (confirm("You can round up and donate " + roundUp.toString() + ". Press OK to add to your donation wallet, or cancel to exit.")) {
       // TODO: Generate ID
-      chrome.storage.sync.get("userId", 
+      chrome.storage.sync.get("userId",
         function (ID) {
           if (!ID) {
             var cur = firebase.database().ref(ID).child("amount").once("value");
